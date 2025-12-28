@@ -229,17 +229,10 @@ sequenceDiagram
     N8N->>N8N: フォーマット判定
     N8N->>N8N: 金額計算 (四則演算)
     
-    note right of N8N
-        対応演算子: +, -, *, /
-        例: 500+300 → 800
-    end
+    note right of N8N: 対応演算子: +, -, *, /<br/>例: 500+300 → 800
 
     N8N->>SHEET: 明細書き込み
-    note right of SHEET
-        支払発生日時 = メッセージ受信日時
-        分類 = 割り勘 (デフォルト)
-        妻負担額 = 金額 ÷ 2
-    end
+    note right of SHEET: 支払発生日時 = メッセージ受信日時<br/>分類 = 割り勘 (デフォルト)<br/>妻負担額 = 金額 ÷ 2
     
     SHEET-->>N8N: 書き込み完了
     N8N->>LINE: 完了通知
