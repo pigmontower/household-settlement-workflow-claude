@@ -51,6 +51,7 @@ graph TB
 | フロー名 | 概要 | トリガー |
 |---|---|---|
 | 明細登録フロー | レシート画像を解析し、品目ごとに負担者を分けて登録する | 画像送信、またはテキスト入力 |
+| 個別登録フロー | 店名と金額（計算式可）を直接入力して登録する | テキスト入力（店名+改行+金額） |
 | 清算確認フロー | 未清算分の総額と内訳を確認し、清算済み処理を行う | 「未清算分を確認」ボタン |
 
 ---
@@ -214,7 +215,38 @@ sequenceDiagram
     LINE-->>ユーザー: 完了メッセージ
 ```
 
-### 4.2 清算確認フロー
+### 4.2 個別登録フロー
+
+```mermaid
+sequenceDiagram
+    actor ユーザー
+    participant LINE as LINE API
+    participant N8N as n8n
+    participant SHEET as スプレッドシート
+
+    ユーザー->>LINE: テキスト送信 (店名+改行+計算式)
+    LINE->>N8N: Webhook (テキスト)
+    N8N->>N8N: フォーマット判定
+    N8N->>N8N: 金額計算 (四則演算)
+    
+    note right of N8N
+        対応演算子: +, -, *, /
+        例: 500+300 → 800
+    end
+
+    N8N->>SHEET: 明細書き込み
+    note right of SHEET
+        支払発生日時 = メッセージ受信日時
+        分類 = 割り勘 (デフォルト)
+        妻負担額 = 金額 ÷ 2
+    end
+    
+    SHEET-->>N8N: 書き込み完了
+    N8N->>LINE: 完了通知
+    LINE-->>ユーザー: 完了メッセージ
+```
+
+### 4.3 清算確認フロー
 
 ```mermaid
 sequenceDiagram
