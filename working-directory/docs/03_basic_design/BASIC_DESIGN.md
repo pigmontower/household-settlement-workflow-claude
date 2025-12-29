@@ -319,3 +319,34 @@ sequenceDiagram
 | `GET /v4/spreadsheets/{id}/values/{range}` | シート読み込み |
 | `POST /v4/spreadsheets/{id}/values/{range}:append` | 行追加 |
 | `POST /v4/spreadsheets/{id}:batchUpdate` | シート名変更、新規作成 |
+
+---
+
+## 7. 環境構成
+
+### 7.1 開発・検証環境
+
+ローカルPC上でn8n（Docker版）を使用して開発・検証を行う。
+
+| 項目 | 方針 |
+|---|---|
+| 実行環境 | ローカルPC（Docker） |
+| 目的 | ワークフローの開発・検証 |
+| データ | 検証用データのみ（本番移行不要） |
+
+### 7.2 本番環境
+
+検証完了後、クラウド環境へ移行する。
+
+| 項目 | 方針 |
+|---|---|
+| 移行先候補 | n8n Cloud / AWS EC2 / AWS ECS |
+| 移行対象 | ワークフロー定義（JSONエクスポート） |
+| 移行対象外 | 検証データ、実行履歴 |
+| 再設定必要 | Credentials（APIキー等の認証情報） |
+
+### 7.3 移行手順
+
+1. ローカル環境でワークフローを「Download」（JSON形式でエクスポート）
+2. クラウド環境で「Import from file...」（JSONファイルをインポート）
+3. Credentialsを再設定（APIキー等を再入力）
